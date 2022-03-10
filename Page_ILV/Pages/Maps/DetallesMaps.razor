@@ -1,0 +1,41 @@
+﻿@page "/detalles-maps/{id:int}"
+
+@using Page_ILV.Data;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+@inject NavigationManager Navegacion;
+@inject IJSRuntime _jsRuntime
+
+<h3>DetallesMaps</h3>
+
+<section>
+    <div id="getbyidmap" style="height:500px;width:100%;"></div>
+</section>
+
+<div>
+    <button class="btn btn-danger" @onclick="Cancelar">Cancelar</button>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Mark oMark = new Mark();
+    Respuesta<Mark> oRespuestaMark = new Respuesta<Mark>();
+
+    public string Url = "/api/ubis";
+
+    private void Cancelar() => Navegacion.NavigateTo("/maps");
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            oRespuestaMark = await Http.GetFromJsonAsync<Respuesta<Mark>>(Url + "/" + id);
+            oMark = oRespuestaMark.Data;
+        }
+
+        await _jsRuntime.InvokeVoidAsync("getByIdMap", oMark);
+    }
+}

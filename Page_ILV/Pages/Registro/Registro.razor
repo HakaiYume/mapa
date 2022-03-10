@@ -1,0 +1,56 @@
+﻿@page "/registro"
+@using System.Net.Http;
+@using Page_ILV.Data;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+
+<div>
+    <img src="css/Img/Nuevo Usuario.png" height="200" width="450" />
+</div>
+
+<div class="row">
+    <div class="col-12 text-right">
+        <a href="nuevo-registro" class="btn btn-primary m-1">Nuevo</a>
+    </div>
+</div>
+
+<table class="table table-primary table-striped">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>Foto</td>
+            <td>Nombre</td>
+            <td>Apellidos</td>
+            <td>Correo</td>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (oRespuesta != null && oRespuesta.Data != null)
+        {
+            @foreach (var oElemento in (List<Regist>)oRespuesta.Data)
+            {
+                <tr>
+                    <td>@oElemento.IdUsuario</td>
+                    <td>@oElemento.Foto</td>
+                    <td>@oElemento.Nombre</td>
+                    <td>@oElemento.Apellidos</td>
+                    <td>@oElemento.Correo</td>
+                    <td>
+                        <a href="/nuevo-registro/@oElemento.IdUsuario" class="btn btn-secondary m-1 col-sm-7">Editar</a>
+                        <a href="/eliminar-registro/@oElemento.IdUsuario" class="btn btn-danger m-1 col-sm-7">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public string Url = "/api/Registro";
+
+    public Respuesta<List<Regist>> oRespuesta = new Respuesta<List<Regist>>();
+
+    protected override async Task OnInitializedAsync() =>
+    oRespuesta = await Http.GetFromJsonAsync<Respuesta<List<Regist>>>(Url);
+}

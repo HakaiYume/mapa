@@ -1,0 +1,64 @@
+﻿<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #94d494;">
+    <a class="navbar-brand" href="#"></a><img src="css/Img/textwit.png" alt="Text" width="185" height="40" />
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link text-white" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link text-white" href="reporte">
+                    <span class="oi oi-list" aria-hidden="true"></span> Reportar Falla
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link text-white" href="about">
+                    <span class="oi oi-info" aria-hidden="true"></span> Sobre nosotros
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link text-white" href="Login">
+                    <span class="oi oi-person" aria-hidden="true"></span> Iniciar sesion
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link text-white" href="nuevo-registro">
+                    <span class="oi oi-people" aria-hidden="true"></span> Registrarse
+                </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
+                <NavLink class="nav-link text-white" href="maps">
+                    <span class="oi oi-people" aria-hidden="true"></span> Maps
+                </NavLink>
+            </li>
+        </ul>
+
+
+        <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+        </div>
+    </div>
+</nav>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

@@ -1,0 +1,44 @@
+﻿@page "/eliminar-reporte/{id:int}"
+@using Page_ILV.Data;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+@inject NavigationManager Navegacion;
+    <div align="center" >
+        <img src="css/Img/Eliminar.png" height="200" width="400" />
+        <div class="h-30"></div>
+    </div>
+    <br />
+    <div class="text-center">
+        <p><b><i>¿Realmente deseas eliminar el reporte?</i></b></p>
+    </div>
+    <div class="text-center">
+        <button @onclick="Eliminar" class="btn btn-danger">Eliminar</button>
+        <button @onclick="Cancelar" class="btn btn-primary">Cancelar</button>
+    </div>
+<br />
+    <div class="text-center">
+        <p><i>La eliminación es definitiva y permantente, una vez realizada no puede ser revertida.</i></p>
+    </div>
+<br />
+    <div class="text-center">
+        <img src="css/img/Web Proyecto logo.png" width="325" height="300" />
+    </div>
+
+    @code {
+        [Parameter]
+        public int id { get; set; }
+
+        Respuesta<object> oRespuesta = new Respuesta<object>();
+
+        public string Url = "/api/Reporte";
+
+        private void Cancelar() => Navegacion.NavigateTo("/reporte");
+
+        private async Task Eliminar()
+        {
+            var response = await Http.DeleteAsync(Url + "/" + id);
+            oRespuesta = response.Content.ReadFromJsonAsync<Respuesta<object>>().Result;
+            Navegacion.NavigateTo("/reporte");
+        }
+    }

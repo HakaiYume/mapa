@@ -1,0 +1,94 @@
+﻿@page "/nuevo-registro"
+@page "/nuevo-registro/{id:int}"
+
+@using Page_ILV.Data;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+@inject NavigationManager Navegacion;
+
+<img src="css/Img/FRG.png" height="150" width="350" />
+<br />
+<br />
+
+<EditForm Model="oRegistro">
+    <div class="container-fluid">
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Foto</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oRegistro.Foto" required></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Nombre</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oRegistro.Nombre" required></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Apellidos</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" @bind-Value="@oRegistro.Apellidos" required></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Correo</label>
+            <div class="col-sm-9">
+                <InputText type="email" class="form-control" @bind-Value="@oRegistro.Correo" required></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Contraseña</label>
+            <div class="col-sm-9">
+                <InputText type="password" class="form-control" @bind-Value="@oRegistro.Contraseña" required></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <div class="col-sm-1">
+                <button class="btn btn-primary" @onclick="Guardar">Guadar</button>
+            </div>
+            <div>
+                <button class="btn btn-danger" @onclick="Cancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    Regist oRegistro = new Regist();
+    Respuesta<object> oRespuesta = new Respuesta<object>();
+    Respuesta<Regist> oRespuestaRegistro = new Respuesta<Regist>();
+
+    public string Url = "/api/Registro";
+
+    private void Cancelar() => Navegacion.NavigateTo("/registro");
+
+    private async Task Guardar()
+    {
+        if (id != 0)
+        {
+            var response = await Http.PutAsJsonAsync<Regist>(Url, oRegistro);
+            oRespuesta = response.Content.ReadFromJsonAsync<Respuesta<object>>().Result;
+            Navegacion.NavigateTo("/registro");
+        }
+        else
+        {
+            var response = await Http.PostAsJsonAsync<Regist>(Url, oRegistro);
+            oRespuesta = response.Content.ReadFromJsonAsync<Respuesta<object>>().Result;
+            Navegacion.NavigateTo("/registro");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            oRespuestaRegistro = await Http.GetFromJsonAsync<Respuesta<Regist>>(Url + "/" + id);
+            oRegistro = oRespuestaRegistro.Data;
+        }
+    }
+}
+

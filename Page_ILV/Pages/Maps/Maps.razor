@@ -1,0 +1,64 @@
+﻿@page "/maps"
+@using System.Net.Http;
+@using Page_ILV.Data;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+@inject IJSRuntime _jsRuntime;
+
+<img src="css/Img/FallaX.png" height="200" width="500" />
+
+<section>
+    <div id="getmap" style="height:500px;width:100%;"></div>
+</section>
+
+<div class="row">
+    <div class="col-12 text-right">
+        <a href="nuevo-maps" class="btn btn-primary m-1">Nuevo</a>
+    </div>
+</div>
+
+<table class="table table-light table-striped">
+    <thead class="table-warning text-dark">
+        <tr>
+            <td>#</td>
+            <td>Nombre</td>
+            <td>Latitud</td>
+            <td>Longitud</td>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (oRespuesta != null && oRespuesta.Data != null)
+        {
+            @foreach (var oElemento in (List<Mark>)oRespuesta.Data)
+            {
+                <tr>
+                    <td>@oElemento.Id</td>
+                    <td>@oElemento.Ubicacion</td>
+                    <td>@oElemento.Lat</td>
+                    <td>@oElemento.Lon</td>
+                    <td>
+                        <a href="/detalles-maps/@oElemento.Id" class="btn btn-secondary m-1">Ver En Maps</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public string Url = "/api/ubis";
+
+    public Respuesta<List<Mark>> oRespuesta = new Respuesta<List<Mark>>();
+
+    protected override async Task OnInitializedAsync() =>
+    oRespuesta = await Http.GetFromJsonAsync<Respuesta<List<Mark>>>(Url);
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _jsRuntime.InvokeVoidAsync("getMap", oRespuesta.Data.ToList());
+        }
+    }
+}

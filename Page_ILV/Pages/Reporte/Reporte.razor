@@ -1,0 +1,58 @@
+﻿@page "/reporte"
+@using System.Net.Http;
+@using Page_ILV.Data;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+
+<img src="css/Img/FallaX.png" height="200" width="500" />
+
+<div class="row">
+    <div class="col-12 text-right">
+        <a href="nuevo-reporte" class="btn btn-primary m-1">Nuevo</a>
+    </div>
+</div>
+
+<table class="table table-light table-striped">
+    <thead class="table-warning text-dark">
+        <tr>
+            <td>#</td>
+            <td>Foto</td>
+            <td>Descripcion</td>
+            <td>Coordenadas</td>
+            <td>Fecha</td>
+            <td>Etiquetas</td>
+            <td>Usuario</td>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (oRespuesta != null && oRespuesta.Data != null)
+        {
+            @foreach (var oElemento in (List<Report>)oRespuesta.Data)
+            {
+                <tr>
+                    <td>@oElemento.Id_Reporte</td>
+                    <td>@oElemento.Foto</td>
+                    <td>@oElemento.Descripcion</td>
+                    <td>@oElemento.Coordenadas</td>
+                    <td>@oElemento.Fecha.ToString("dd/MMMM/yyyy")</td>
+                    <td>@oElemento.Etiqueta</td>
+                    <td>@oElemento.Usuario</td>
+                    <td>
+                        <a href="/nuevo-reporte/@oElemento.Id_Reporte" class="btn btn-secondary m-1 col-sm-7">Editar</a>
+                        <a href="/eliminar-reporte/@oElemento.Id_Reporte" class="btn btn-danger m-1 col-sm-7">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    public string Url = "/api/Reporte";
+
+    public Respuesta<List<Report>> oRespuesta = new Respuesta<List<Report>>();
+
+    protected override async Task OnInitializedAsync() =>
+    oRespuesta = await Http.GetFromJsonAsync<Respuesta<List<Report>>>(Url);
+}

@@ -1,0 +1,71 @@
+﻿@page "/nuevo-maps"
+
+@using Page_ILV.Data;
+@using System.Net.Http;
+@using System.Net.Http.Json;
+@inject HttpClient Http;
+@inject NavigationManager Navegacion;
+@inject IJSRuntime _jsRuntime
+
+<img src="css/Img/Web Proyecto logo.png" width="325" height="300" />
+
+<section>
+    <div id="map" style="height:500px;width:100%;"></div>
+</section>
+
+<EditForm Model="oMark">
+    <div class="container-fluid">
+        <div class="form-group row my-1">
+            <label class="col-sm-3">Nombre</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" id="ubicacion" @bind-Value="@oMark.Ubicacion"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Latitud</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" id="latitud" @bind-Value="@oMark.Lat"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <label class="col-sm-3">Longitud</label>
+            <div class="col-sm-9">
+                <InputText class="form-control" id="longitud" @bind-Value="@oMark.Lon"></InputText>
+            </div>
+        </div>
+        <div class="form-group row mb-1">
+            <div class="col-sm-1">
+                <button class="btn btn-primary" @onclick="Guardar">Guadar</button>
+            </div>
+            <div>
+                <button class="btn btn-danger" @onclick="Cancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    Mark oMark = new Mark();
+    Respuesta<object> oRespuesta = new Respuesta<object>();
+    Respuesta<Mark> oRespuestaMark = new Respuesta<Mark>();
+
+    public string Url = "/api/ubis";
+
+    private void Cancelar() => Navegacion.NavigateTo("/maps");
+
+    private async Task Guardar()
+    {
+        var response = await Http.PostAsJsonAsync<Mark>(Url, oMark);
+        oRespuesta = response.Content.ReadFromJsonAsync<Respuesta<object>>().Result;
+        Navegacion.NavigateTo("/maps");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _jsRuntime.InvokeVoidAsync("initMap", null);
+        }
+    }
+}
+
